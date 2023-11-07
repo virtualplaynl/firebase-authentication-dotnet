@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cldmlglhxggw4"
-path="res://.godot/imported/firebase.png-cc36e5480f7ccfb333eeb02da40197ce.ctex"
+path="res://.godot/imported/firebase.png-1a006ff580ea9d870dbadfa8c6aac684.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/firebase-authentication-dotnet/src/Auth/Assets/firebase.png"
-dest_files=["res://.godot/imported/firebase.png-cc36e5480f7ccfb333eeb02da40197ce.ctex"]
+source_file="res://addons/firebase-authentication-godot/src/Auth/Assets/firebase.png"
+dest_files=["res://.godot/imported/firebase.png-1a006ff580ea9d870dbadfa8c6aac684.ctex"]
 
 [params]
 

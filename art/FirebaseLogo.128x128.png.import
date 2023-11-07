@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dqr4nb5748m4b"
-path="res://.godot/imported/FirebaseLogo.128x128.png-f5c5f376e04e9c8ed5ff8fce7aa804de.ctex"
+path="res://.godot/imported/FirebaseLogo.128x128.png-33db14fea40b37193e89bf9fc72baf30.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/firebase-authentication-dotnet/art/FirebaseLogo.128x128.png"
-dest_files=["res://.godot/imported/FirebaseLogo.128x128.png-f5c5f376e04e9c8ed5ff8fce7aa804de.ctex"]
+source_file="res://addons/firebase-authentication-godot/art/FirebaseLogo.128x128.png"
+dest_files=["res://.godot/imported/FirebaseLogo.128x128.png-33db14fea40b37193e89bf9fc72baf30.ctex"]
 
 [params]
 
