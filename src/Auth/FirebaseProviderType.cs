@@ -15,6 +15,9 @@ namespace Firebase.Auth
         [EnumMember(Value = "google.com")]
         Google,
 
+        [EnumMember(Value = "playgames.google.com")]
+        PlayGames,
+
         [EnumMember(Value = "github.com")]
         Github,
 
@@ -26,6 +29,15 @@ namespace Firebase.Auth
 
         [EnumMember(Value = "apple.com")]
         Apple,
+
+        [EnumMember(Value = "gc.apple.com")]
+        GameCenter,
+
+        [EnumMember(Value = "yahoo.com")]
+        Yahoo,
+
+        [EnumMember(Value = "steam.com")]
+        Steam,
 
         [EnumMember(Value = "password")]
         EmailAndPassword,
