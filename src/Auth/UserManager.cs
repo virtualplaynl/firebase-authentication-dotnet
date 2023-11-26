@@ -1,6 +1,5 @@
 ﻿using Firebase.Auth.Repository;
 using System;
-using System.Threading.Tasks;
 
 namespace Firebase.Auth
 {

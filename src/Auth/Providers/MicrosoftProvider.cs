@@ -2,7 +2,7 @@
 {
     public class MicrosoftProvider : OAuthProvider
     {
-        public static string[] DefaultScopes = new[] 
+        public static string[] DefaultScopes { get; } = new[]
         {
             "profile",
             "email",
@@ -12,7 +12,7 @@
 
         public MicrosoftProvider()
         {
-            this.AddScopes(DefaultScopes);
+            AddScopes(DefaultScopes);
         }
 
         public static AuthCredential GetCredential(string accessToken) => GetCredential(FirebaseProviderType.Microsoft, accessToken, OAuthCredentialTokenType.AccessToken);

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Globalization;
 
 namespace Firebase.Auth.Requests.Converters
 {
@@ -12,7 +13,7 @@ namespace Firebase.Auth.Requests.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            var t = long.Parse((string)reader.Value);
+            var t = long.Parse((string)reader.Value, CultureInfo.InvariantCulture);
             var dt = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             return dt.AddMilliseconds(t);
         }

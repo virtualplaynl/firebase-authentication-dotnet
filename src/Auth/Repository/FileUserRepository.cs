@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Converters;
 using System;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace Firebase.Auth.Repository
 {

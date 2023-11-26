@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Firebase.Auth.Repository
+﻿namespace Firebase.Auth.Repository
 {
     /// <summary>
     /// Repository abstraction for <see cref="User"/>.

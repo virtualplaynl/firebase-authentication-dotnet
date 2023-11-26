@@ -81,7 +81,7 @@ namespace Firebase.Auth
             }
         }
 
-        public async Task<UserCredential> SignInWithRedirectAsync(FirebaseProviderType authType, SignInRedirectDelegate redirectDelegate)
+        public async Task<UserCredential> SignInWithRedirectAsync(FirebaseProviderType authType, SignInRedirect redirectDelegate)
         {
             var provider = this.config.GetAuthProvider(authType);
             

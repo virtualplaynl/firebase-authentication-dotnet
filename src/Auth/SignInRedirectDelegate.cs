@@ -7,5 +7,5 @@ namespace Firebase.Auth
     /// </summary>
     /// <param name="uri"> Uri to take user to. </param>
     /// <returns> Redirect uri that user lands on. </returns>
-    public delegate Task<string> SignInRedirectDelegate(string uri);
+    public delegate Task<string> SignInRedirect(string uri);
 }

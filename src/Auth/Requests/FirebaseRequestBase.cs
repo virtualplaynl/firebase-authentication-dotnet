@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Globalization;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,12 +19,9 @@ namespace Firebase.Auth.Requests
     /// <typeparam name="TResponse"> Specifies the type of response payload. </typeparam>
     public abstract class FirebaseRequestBase<TRequest, TResponse>
     {
-        protected readonly FirebaseAuthConfig config;
+        protected FirebaseAuthConfig config { get; }
 
-        protected FirebaseRequestBase(FirebaseAuthConfig config)
-        {
-            this.config = config;
-        }
+        protected FirebaseRequestBase(FirebaseAuthConfig config) => this.config = config;
 
         protected abstract string UrlFormat { get; }
 
@@ -47,7 +45,7 @@ namespace Firebase.Auth.Requests
 
                 var httpResponse = await this.config.HttpClient.SendAsync(message).ConfigureAwait(false);
                 responseData = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                
+
                 var response = JsonConvert.DeserializeObject<TResponse>(responseData, this.JsonSettingsOverride ?? this.config.JsonSettings);
 
                 httpResponse.EnsureSuccessStatusCode();
@@ -63,7 +61,7 @@ namespace Firebase.Auth.Requests
 
         private string GetFormattedUrl(string apiKey)
         {
-            return string.Format(this.UrlFormat, apiKey);
+            return string.Format(CultureInfo.InvariantCulture, UrlFormat, apiKey);
         }
     }
 }

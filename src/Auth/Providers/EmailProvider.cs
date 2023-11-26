@@ -19,11 +19,11 @@ namespace Firebase.Auth.Providers
         {
             base.Initialize(config);
 
-            this.signupNewUser = new SignupNewUser(this.config);
-            this.setAccountInfo = new SetAccountInfo(this.config);
-            this.getAccountInfo = new GetAccountInfo(this.config);
-            this.verifyPassword = new VerifyPassword(this.config);
-            this.resetPassword = new ResetPassword(this.config);
+            this.signupNewUser = new SignupNewUser(this.Config);
+            this.setAccountInfo = new SetAccountInfo(this.Config);
+            this.getAccountInfo = new GetAccountInfo(this.Config);
+            this.verifyPassword = new VerifyPassword(this.Config);
+            this.resetPassword = new ResetPassword(this.Config);
             this.linkAccount = new SetAccountLink(config);
         }
 
@@ -89,12 +89,12 @@ namespace Firebase.Auth.Providers
                     IsAnonymous = false
                 };
 
-                return new UserCredential(new User(this.config, setUser, credential), authCredential, OperationType.SignIn);
+                return new UserCredential(new User(this.Config, setUser, credential), authCredential, OperationType.SignIn);
             }
 
             var getUser = await this.GetUserInfoAsync(signupResponse.IdToken).ConfigureAwait(false);
 
-            return new UserCredential(new User(this.config, getUser, credential), authCredential, OperationType.SignIn);
+            return new UserCredential(new User(this.Config, getUser, credential), authCredential, OperationType.SignIn);
         }
 
         protected internal override async Task<UserCredential> SignInWithCredentialAsync(AuthCredential credential)
@@ -117,15 +117,15 @@ namespace Firebase.Auth.Providers
                 ProviderType = FirebaseProviderType.EmailAndPassword
             };
 
-            return new UserCredential(new User(this.config, user, fc), ec, OperationType.SignIn);
+            return new UserCredential(new User(this.Config, user, fc), ec, OperationType.SignIn);
         }
 
-        protected internal override async Task<UserCredential> LinkWithCredentialAsync(string token, AuthCredential credential)
+        protected internal override async Task<UserCredential> LinkWithCredentialAsync(string idToken, AuthCredential credential)
         {
             var c = (EmailCredential)credential;
             var request = new SetAccountLinkRequest
             {
-                IdToken = token,
+                IdToken = idToken,
                 Email = c.Email,
                 Password = c.Password,
                 ReturnSecureToken = true
@@ -164,7 +164,7 @@ namespace Firebase.Auth.Providers
                 RefreshToken = link.RefreshToken
             };
 
-            return new UserCredential(new User(this.config, info, fc), credential, OperationType.Link);
+            return new UserCredential(new User(this.Config, info, fc), credential, OperationType.Link);
         }
 
         private async Task<UserInfo> GetUserInfoAsync(string idToken)

@@ -39,7 +39,7 @@ namespace Firebase.Auth
         /// </summary>
         /// <param name="authType"> Type of the provider, must be an oauth one. </param>
         /// <param name="redirectDelegate"> Delegate which should invoke the passed uri for oauth authentication and return the final redirect uri. </param>
-        Task<UserCredential> SignInWithRedirectAsync(FirebaseProviderType authType, SignInRedirectDelegate redirectDelegate);
+        Task<UserCredential> SignInWithRedirectAsync(FirebaseProviderType authType, SignInRedirect redirectDelegate);
         
         /// <summary>
         /// Signs in with email and password. If the email &amp; password combination is incorrect, <see cref="FirebaseAuthException"/> is thrown.

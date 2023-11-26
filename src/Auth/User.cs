@@ -159,7 +159,7 @@ namespace Firebase.Auth
             return userCredential;
         }
 
-        public async Task<UserCredential> LinkWithRedirectAsync(FirebaseProviderType providerType, SignInRedirectDelegate redirectDelegate)
+        public async Task<UserCredential> LinkWithRedirectAsync(FirebaseProviderType providerType, SignInRedirect redirectDelegate)
         {
             var provider = this.config.Providers.FirstOrDefault(p => p.ProviderType == providerType);
 

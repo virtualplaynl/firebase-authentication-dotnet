@@ -91,12 +91,12 @@ namespace Firebase.Auth
                         return AuthErrorReason.AlreadyLinked;
                 }
 
-                if (errorData?.error?.message?.StartsWith("WEAK_PASSWORD :") ?? false)
+                if (errorData?.error?.message?.StartsWith("WEAK_PASSWORD :", StringComparison.Ordinal) ?? false)
                 {
                     // possible errors from Email/Password Account Signup (via signupNewUser or setAccountInfo)
                     return AuthErrorReason.WeakPassword;
                 }
-                else if (errorData?.error?.message?.StartsWith("TOO_MANY_ATTEMPTS_TRY_LATER :") ?? false)
+                else if (errorData?.error?.message?.StartsWith("TOO_MANY_ATTEMPTS_TRY_LATER :", StringComparison.Ordinal) ?? false)
                 {
                     // possible errors from Email/Password Signin
                     return AuthErrorReason.TooManyAttemptsTryLater;

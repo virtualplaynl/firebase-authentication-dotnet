@@ -8,14 +8,14 @@ namespace Firebase.Auth.Providers
 {
     public abstract class OAuthProvider : FirebaseAuthProvider
     {
-        protected VerifyAssertion verifyAssertion;
-        protected readonly List<string> scopes;
-        protected readonly Dictionary<string, string> parameters;
+        protected VerifyAssertion VerifyAssertion { get; private set; }
+        protected List<string> Scopes { get; }
+        protected Dictionary<string, string> Parameters { get; }
 
         public OAuthProvider()
         {
-            this.scopes = new List<string>();
-            this.parameters = new Dictionary<string, string>();
+            Scopes = new List<string>();
+            Parameters = new Dictionary<string, string>();
         }
 
         protected virtual string LocaleParameterName => null;
@@ -33,19 +33,19 @@ namespace Firebase.Auth.Providers
         internal override void Initialize(FirebaseAuthConfig config)
         {
             base.Initialize(config);
-            this.verifyAssertion = new VerifyAssertion(config);
+            this.VerifyAssertion = new VerifyAssertion(config);
         }
 
         public virtual FirebaseAuthProvider AddScopes(params string[] scopes)
         {
-            this.scopes.AddRange(scopes);
+            this.Scopes.AddRange(scopes);
 
             return this;
         }
 
         public virtual FirebaseAuthProvider AddCustomParameters(params KeyValuePair<string, string>[] parameters)
         {
-            parameters.ToList().ForEach(p => this.parameters.Add(p.Key, p.Value));
+            parameters.ToList().ForEach(p => this.Parameters.Add(p.Key, p.Value));
 
             return this;
         }
@@ -60,30 +60,30 @@ namespace Firebase.Auth.Providers
 
         internal virtual async Task<OAuthContinuation> SignInAsync()
         {
-            if (this.LocaleParameterName != null && !this.parameters.ContainsKey(this.LocaleParameterName))
+            if (this.LocaleParameterName != null && !this.Parameters.ContainsKey(this.LocaleParameterName))
             {
-                this.parameters[this.LocaleParameterName] = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
+                this.Parameters[this.LocaleParameterName] = CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
             }
 
             var request = new CreateAuthUriRequest
             {
-                ContinueUri = this.config.RedirectUri,
+                ContinueUri = this.Config.RedirectUri,
                 ProviderId = this.ProviderType,
-                CustomParameters = this.parameters,
+                CustomParameters = this.Parameters,
                 OauthScope = this.GetParsedOauthScopes(),
             };
 
-            var response = await this.createAuthUri.ExecuteAsync(request).ConfigureAwait(false);
+            var response = await this.CreateAuthUri.ExecuteAsync(request).ConfigureAwait(false);
 
-            return new OAuthContinuation(this.config, response.AuthUri, response.SessionId, this.ProviderType);
+            return new OAuthContinuation(this.Config, response.AuthUri, response.SessionId, this.ProviderType);
         }
 
         protected internal override async Task<UserCredential> SignInWithCredentialAsync(AuthCredential credential)
         {
             var c = (OAuthCredential)credential;
-            var (user, response) = await this.verifyAssertion.ExecuteAndParseAsync(credential.ProviderType, new VerifyAssertionRequest
+            var (user, response) = await this.VerifyAssertion.ExecuteAndParseAsync(credential.ProviderType, new VerifyAssertionRequest
             {
-                RequestUri = $"https://{this.config.AuthDomain}",
+                RequestUri = $"https://{this.Config.AuthDomain}",
                 PostBody = c.GetPostBodyValue(credential.ProviderType),
                 PendingToken = c.GetPendingTokenValue(),
                 ReturnIdpCredential = true,
@@ -100,10 +100,10 @@ namespace Firebase.Auth.Providers
         protected internal override async Task<UserCredential> LinkWithCredentialAsync(string idToken, AuthCredential credential)
         {
             var c = (OAuthCredential)credential;
-            var (user, response) = await this.verifyAssertion.ExecuteAndParseAsync(credential.ProviderType, new VerifyAssertionRequest
+            var (user, response) = await this.VerifyAssertion.ExecuteAndParseAsync(credential.ProviderType, new VerifyAssertionRequest
             {
                 IdToken = idToken,
-                RequestUri = $"https://{this.config.AuthDomain}",
+                RequestUri = $"https://{this.Config.AuthDomain}",
                 PostBody = c.GetPostBodyValue(c.ProviderType),
                 PendingToken = c.GetPendingTokenValue(),
                 ReturnIdpCredential = true,
@@ -119,12 +119,12 @@ namespace Firebase.Auth.Providers
 
         protected string GetParsedOauthScopes()
         {
-            if (!this.scopes.Any())
+            if (!this.Scopes.Any())
             {
                 return null;
             }
 
-            return $"{{ \"{this.ProviderType.ToEnumString()}\": \"{string.Join(",", this.scopes)}\" }}";
+            return $"{{ \"{this.ProviderType.ToEnumString()}\": \"{string.Join(",", this.Scopes)}\" }}";
         }
 
         internal class OAuthCredential : AuthCredential
