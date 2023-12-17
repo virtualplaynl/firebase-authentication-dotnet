@@ -1,6 +1,11 @@
-﻿using Firebase.Auth.Requests;
+﻿using Godot;
+
+using Firebase.Auth.Requests;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Globalization;
+using Firebase.Auth.Requests.Converters;
 
 namespace Firebase.Auth.Providers
 {
@@ -67,7 +72,7 @@ namespace Firebase.Auth.Providers
                 ExpiresIn = signupResponse.ExpiresIn,
                 IdToken = signupResponse.IdToken,
                 RefreshToken = signupResponse.RefreshToken,
-                ProviderType = FirebaseProviderType.EmailAndPassword
+                ProviderType = "password"
             };
 
             // set display name if available
@@ -114,7 +119,7 @@ namespace Firebase.Auth.Providers
                 ExpiresIn = response.ExpiresIn,
                 IdToken = response.IdToken,
                 RefreshToken = response.RefreshToken,
-                ProviderType = FirebaseProviderType.EmailAndPassword
+                ProviderType = "password"
             };
 
             return new UserCredential(new User(this.Config, user, fc), ec, OperationType.SignIn);
@@ -160,7 +165,7 @@ namespace Firebase.Auth.Providers
             {
                 ExpiresIn = link.ExpiresIn,
                 IdToken = link.IdToken,
-                ProviderType = credential.ProviderType,
+                ProviderType = new DefaultEnumConverter<FirebaseProviderType>().EnumString(credential.ProviderType),
                 RefreshToken = link.RefreshToken
             };
 

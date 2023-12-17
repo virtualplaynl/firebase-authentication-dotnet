@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿using System.Text.Json.Serialization;
 using System.Collections.Generic;
+using Firebase.Auth.Requests.Converters;
 
 namespace Firebase.Auth.Requests
 {
@@ -8,7 +8,7 @@ namespace Firebase.Auth.Requests
     {
         public string AuthUri { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof(DefaultEnumConverter<FirebaseProviderType>))]
         public FirebaseProviderType ProviderId { get; set; }
 
         public string SessionId { get; set; }
@@ -26,7 +26,7 @@ namespace Firebase.Auth.Requests
 
         public string ContinueUri { get; set; }
 
-        [JsonProperty("customParameter")]
+        [JsonPropertyName("customParameter")]
         public Dictionary<string, string> CustomParameters { get; set; }
         
         public string OauthScope { get; set; }

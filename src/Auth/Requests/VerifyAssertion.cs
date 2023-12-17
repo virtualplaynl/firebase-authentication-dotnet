@@ -1,5 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Firebase.Auth.Requests.Converters;
 
 namespace Firebase.Auth.Requests
 {
@@ -60,7 +61,7 @@ namespace Firebase.Auth.Requests
 
         public bool NeedConfirmation { get; set; }
 
-        [JsonProperty("verifiedProvider")]
+        [JsonPropertyName("verifiedProvider")]
         public FirebaseProviderType[] VerifiedProviders { get; set; }
 
         public string ErrorMessage { get; set; }
@@ -120,7 +121,7 @@ namespace Firebase.Auth.Requests
                 ExpiresIn = assertion.ExpiresIn,
                 RefreshToken = assertion.RefreshToken,
                 IdToken = assertion.IdToken,
-                ProviderType = providerType
+                ProviderType = new DefaultEnumConverter<FirebaseProviderType>().EnumString(providerType)
             };
 
             return (new User(this.config, userInfo, token), assertion);

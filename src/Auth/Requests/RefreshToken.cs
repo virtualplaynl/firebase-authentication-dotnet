@@ -1,23 +1,29 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Firebase.Auth.Requests
 {
     public class RefreshTokenRequest
     {
+        [JsonPropertyName("grant_type")]
         public string GrantType { get; set; }
 
+        [JsonPropertyName("refresh_token")]
         public string RefreshToken { get; set; }
     }
 
     public class RefreshTokenResponse
     {
+        [JsonPropertyName("expires_in")]
         public int ExpiresIn { get; set; }
 
+        [JsonPropertyName("refresh_token")]
         public string RefreshToken { get; set; }
 
+        [JsonPropertyName("id_token")]
         public string IdToken { get; set; }
 
+        [JsonPropertyName("user_id")]
         public string UserId { get; set; }
     }
 
@@ -28,16 +34,13 @@ namespace Firebase.Auth.Requests
     {
         public RefreshToken(FirebaseAuthConfig config) : base(config)
         {
-            this.JsonSettingsOverride = new JsonSerializerSettings
+            this.JsonSettingsOverride = new JsonSerializerOptions
             {
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new SnakeCaseNamingStrategy()
-                }
+                PropertyNamingPolicy = null
             };
         }
 
-        protected override JsonSerializerSettings JsonSettingsOverride { get; }
+        protected override JsonSerializerOptions JsonSettingsOverride { get; }
 
         protected override string UrlFormat => Endpoints.GoogleRefreshAuth;
     }

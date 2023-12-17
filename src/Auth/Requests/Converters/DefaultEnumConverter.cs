@@ -1,7 +1,11 @@
-﻿using Newtonsoft.Json.Converters;
-using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Godot;
 
 namespace Firebase.Auth.Requests.Converters
 {
@@ -9,60 +13,77 @@ namespace Firebase.Auth.Requests.Converters
     /// <summary>
     /// Defaults enum values to the base value if 
     /// </summary>
-    public class DefaultEnumConverter : StringEnumConverter
+    public class DefaultEnumConverter<T> : JsonConverter<T> where T : struct, Enum
     {
         /// <summary>
         /// The default value used to fallback on when a enum is not convertable.
         /// </summary>
-        private readonly int defaultValue;
+        private readonly T defaultValue;
 
-        /// <inheritdoc />
-        /// <summary>
-        /// Default constructor. Defaults the default value to 0.
-        /// </summary>
-        public DefaultEnumConverter()
-        { }
+        private readonly Dictionary<string, T> enumKeys;
+        private readonly Dictionary<T, string> enumStrings;
 
-        /// <inheritdoc />
-        /// <summary>
-        /// Sets the default value for the enum value.
-        /// </summary>
-        /// <param name="defaultValue">The default value to use.</param>
-        public DefaultEnumConverter(int defaultValue)
+        public DefaultEnumConverter(T defaultValue = default)
         {
             this.defaultValue = defaultValue;
+
+            enumKeys = new();
+            enumStrings = new();
+
+            foreach (T value in typeof(T).GetEnumValues())
+            {
+                string name = value.ToString();
+                enumKeys.Add(name, value);
+
+                MemberInfo memberInfo = typeof(T).GetMember(name).FirstOrDefault(m => m.DeclaringType == typeof(T));
+                object[] valueAttributes = memberInfo.GetCustomAttributes(typeof(EnumMemberAttribute), false);
+
+                bool hasAttribute = false;
+                foreach (EnumMemberAttribute attribute in valueAttributes.Cast<EnumMemberAttribute>())
+                {
+                    enumKeys.Add(attribute.Value, value);
+                    enumStrings.Add(value, attribute.Value);
+                    hasAttribute = true;
+                }
+                if (!hasAttribute) enumStrings.Add(value, name);
+            }
         }
 
-        /// <inheritdoc />
-        /// <summary>
-        /// Reads the provided JSON and attempts to convert using StringEnumConverter. If that fails set the value to the default value.
-        /// </summary>
-        /// <param name="reader">Reads the JSON value.</param>
-        /// <param name="objectType">Current type that is being converted.</param>
-        /// <param name="existingValue">The existing value being read.</param>
-        /// <param name="serializer">Instance of the JSON Serializer.</param>
-        /// <returns>The deserialized value of the enum if it exists or the default value if it does not.</returns>
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public T Parse(string name)
         {
-            try
-            {
-                return base.ReadJson(reader, objectType, existingValue, serializer);
-            }
-            catch
-            {
-                return Enum.Parse(objectType, $"{defaultValue}");
-            }
+            if (enumKeys.TryGetValue(name, out T value))
+                return value;
+
+            return defaultValue;
+        }
+
+        public string EnumString(T value)
+        {
+            if (enumStrings.TryGetValue(value, out string name))
+                return name;
+
+            return null;
+        }
+
+        public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return Parse(reader.GetString());
+        }
+
+        public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString());
         }
 
         /// <inheritdoc />
         /// <summary>
         /// Validates that this converter can handle the type that is being provided.
         /// </summary>
-        /// <param name="objectType">The type of the object being converted.</param>
+        /// <param name="typeToConvert">The type of the object being converted.</param>
         /// <returns>True if the base class says so, and if the value is an enum and has a default value to fall on.</returns>
-        public override bool CanConvert(Type objectType)
+        public override bool CanConvert(Type typeToConvert)
         {
-            return base.CanConvert(objectType) && objectType.GetTypeInfo().IsEnum && Enum.IsDefined(objectType, defaultValue);
+            return typeToConvert.GetTypeInfo().IsEnum && typeToConvert == typeof(T);
         }
     }
 }

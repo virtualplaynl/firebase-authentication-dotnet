@@ -1,10 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace Firebase.Auth.Requests
 {
     public class SetAccountUnlinkRequest : IdTokenRequest
     {
-        [JsonProperty("deleteProvider")]
+        [JsonPropertyName("deleteProvider")]
         public FirebaseProviderType[] DeleteProviders { get; set; }
     }
 

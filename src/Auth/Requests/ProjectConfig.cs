@@ -1,11 +1,14 @@
 ﻿using System.Net.Http;
+using System.Text.Json.Serialization;
 
 namespace Firebase.Auth.Requests
 {
     public class ProjectConfigResponse
     {
+        [JsonPropertyName("projectId")]
         public string ProjectId { get; set; }
 
+        [JsonPropertyName("authorizedDomains")]
         public string[] AuthorizedDomains { get; set; }
     }
 

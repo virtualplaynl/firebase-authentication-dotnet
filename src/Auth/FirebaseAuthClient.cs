@@ -1,4 +1,6 @@
-﻿using Firebase.Auth.Providers;
+﻿using Godot;
+
+using Firebase.Auth.Providers;
 using Firebase.Auth.Requests;
 using System;
 using System.Linq;
@@ -128,7 +130,7 @@ namespace Firebase.Auth
                 ExpiresIn = response.ExpiresIn,
                 IdToken = response.IdToken,
                 RefreshToken = response.RefreshToken,
-                ProviderType = FirebaseProviderType.Anonymous
+                ProviderType = "anonymous"
             };
 
             var info = new UserInfo
@@ -165,7 +167,6 @@ namespace Firebase.Auth
 
             var provider = (EmailProvider)this.config.GetAuthProvider(FirebaseProviderType.EmailAndPassword);
             var result = await provider.SignInUserAsync(email, password).ConfigureAwait(false);
-
             this.SaveToken(result.User);
 
             return result;

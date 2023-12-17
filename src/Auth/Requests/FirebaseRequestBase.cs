@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Godot;
+using System.Text.Json;
 using System;
 using System.Globalization;
 using System.Net.Http;
@@ -27,12 +28,12 @@ namespace Firebase.Auth.Requests
 
         protected virtual HttpMethod Method => HttpMethod.Post;
 
-        protected virtual JsonSerializerSettings JsonSettingsOverride => null;
+        protected virtual JsonSerializerOptions JsonSettingsOverride => null;
 
         public virtual async Task<TResponse> ExecuteAsync(TRequest request)
         {
             var responseData = string.Empty;
-            var requestData = request != null ? JsonConvert.SerializeObject(request, this.JsonSettingsOverride ?? this.config.JsonSettings) : null;
+            var requestData = request != null ? JsonSerializer.Serialize(request, this.JsonSettingsOverride ?? this.config.JsonSettings) : null;
             var url = this.GetFormattedUrl(this.config.ApiKey);
 
             try
@@ -46,7 +47,7 @@ namespace Firebase.Auth.Requests
                 var httpResponse = await this.config.HttpClient.SendAsync(message).ConfigureAwait(false);
                 responseData = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                var response = JsonConvert.DeserializeObject<TResponse>(responseData, this.JsonSettingsOverride ?? this.config.JsonSettings);
+                var response = JsonSerializer.Deserialize<TResponse>(responseData, this.JsonSettingsOverride ?? this.config.JsonSettings);
 
                 httpResponse.EnsureSuccessStatusCode();
 
@@ -54,7 +55,7 @@ namespace Firebase.Auth.Requests
             }
             catch (Exception ex)
             {
-                var errorReason = FirebaseFailureParser.GetFailureReason(responseData);
+                AuthErrorReason errorReason = (ex is JsonException) ? AuthErrorReason.SystemError : FirebaseFailureParser.GetFailureReason(responseData);
                 throw new FirebaseAuthHttpException(ex, url, requestData, responseData, errorReason);
             }
         }

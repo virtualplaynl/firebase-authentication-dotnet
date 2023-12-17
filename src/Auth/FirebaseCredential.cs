@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Text.Json.Serialization;
+using Firebase.Auth.Requests.Converters;
 
 namespace Firebase.Auth
 {
@@ -35,7 +37,7 @@ namespace Firebase.Auth
         /// <summary>
         /// Type of the firebase auth provider.
         /// </summary>
-        public FirebaseProviderType ProviderType { get; set; }
+        public string ProviderType { get; set; }
 
         /// <summary>
         /// Specifies whether the token already expired. 
